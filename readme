@@ -1,0 +1,4 @@
+# Запуск в докере
+- docker build -f Dockerfile . -t calendar:1.0.0 (или любое другое название для имаджа)
+- Заполнить .env на основе example.env (в том числе и название имаджа)
+- docker compose --env-file=.env  up -d

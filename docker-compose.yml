@@ -1,0 +1,59 @@
+version: "3.9"
+services:
+  calendar-sync-svc:
+    image: ${CALENDAR_SYNC_SVC_IMAGE}
+    restart: always
+    expose:
+      - ${PORT}
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - calendar_net
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      postgres-prisma-migrations:
+        condition: service_completed_successfully
+
+  postgres:
+    container_name: postgres-calendar
+    hostname: ${POSTGRES_HOST}
+    image: postgres:15
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - calendar_net
+    volumes:
+      - /var/lib/postgres-calendar/data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  postgres-prisma-migrations:
+    command: npm run migration:run
+    image: ${CALENDAR_SYNC_SVC_IMAGE}
+    restart: on-failure:3
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
+    # environment:
+    #   - POSTGRES_HOST=${POSTGRES_HOST}
+    #   - POSTGRES_USER=${POSTGRES_USER}
+    #   - POSTGRES_DB=${POSTGRES_DB}
+    #   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - calendar_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+networks:
+  calendar_net:
+    driver: bridge

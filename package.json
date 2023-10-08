@@ -1,0 +1,34 @@
+{
+  "name": "calendar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf dist && tsc",
+    "migration:run": "prisma migrate deploy",
+    "prisma:generate": "prisma generate"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.4.1",
+    "@types/date-fns": "^2.6.0",
+    "@types/needle": "^3.2.1",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.23.2",
+    "graphql": "^16.8.1",
+    "mercurius": "^13.1.0",
+    "needle": "^3.2.0",
+    "node-schedule": "^2.1.1",
+    "nodemon": "^3.0.1",
+    "prisma": "^5.4.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/node-schedule": "^2.1.1"
+  }
+}

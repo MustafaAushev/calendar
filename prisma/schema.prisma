@@ -1,0 +1,25 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["public"]
+}
+
+model Event {
+    id String @id @db.VarChar(128)
+    
+    timestamp DateTime @db.Timestamptz(6)
+
+    createdAt DateTime @map("created_at") @db.Timestamptz(6)
+    endedAt DateTime @map("ended_at") @db.Timestamptz(6)
+    startedAt DateTime @map("started_at") @db.Timestamptz(6)
+    lastModifiedAt DateTime @default(now()) @map("last_modified_at") @db.Timestamptz(6)
+
+    @@unique([id])
+    @@map("events")
+    @@schema("public")
+}
